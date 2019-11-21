@@ -1,0 +1,36 @@
+{
+  "name": "batch-subdomain-registration",
+  "description": "Batch subdomain registration",
+  "version": "1.0.0",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rnsdomains/rns-subdomain-batch.git"
+  },
+  "keywords": [
+    "rsk",
+    "rif",
+    "rns"
+  ],
+  "scripts": {
+    "test": "truffle test"
+  },
+  "author": "rnsdomains",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rnsdomains/rns-subdomain-batch/issues"
+  },
+  "homepage": "https://github.com/rnsdomains/rns-subdomain-batch#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^2.3.0"
+  },
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.1",
+    "chai": "^4.2.0",
+    "eth-ens-namehash": "^2.0.8",
+    "mem": ">=4.0.0"
+  }
+}
