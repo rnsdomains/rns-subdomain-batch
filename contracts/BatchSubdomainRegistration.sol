@@ -8,8 +8,6 @@ contract BatchSubdomainRegistration is Ownable {
 
     AbstractRNS private rns;
     bytes32 private rootNode;
-    AbstractAddrResolver private resolver;
-
 
     constructor (
         AbstractRNS _rns,
@@ -17,11 +15,13 @@ contract BatchSubdomainRegistration is Ownable {
     ) public {
         rns = _rns;
         rootNode = _rootNode;
-        resolver = AbstractAddrResolver(rns.resolver(rootNode));
     }
 
     function register(address[] calldata owners, bytes32[] calldata labels) external onlyOwner {
         require(owners.length == labels.length, "Owners and labels arrays should contain same amount of elements");
+
+        AbstractAddrResolver resolver;
+        resolver = AbstractAddrResolver(rns.resolver(rootNode));
 
         address owner;
         bytes32 label;
