@@ -1,52 +1,34 @@
 const RNS = artifacts.require('RNS');
-const Token = artifacts.require('ERC677TokenContract');
-const TokenRegistrar = artifacts.require('TokenRegistrar');
-const RSKOwner = artifacts.require('RSKOwner');
 const PublicResolver = artifacts.require('PublicResolver');
-const BatchSubdomainRegistration = artifacts.require('BatchSubdomainRegistration');
+const BatchSubdomainRegistrar = artifacts.require('BatchSubdomainRegistrar');
 
 const namehash = require('eth-ens-namehash').hash;
 const expect = require('chai').expect;
 const helpers = require('@openzeppelin/test-helpers');
 
-contract('BatchSubdomainRegistration', async (accounts) => {
-  let rns, token, tokenRegistrar, rskOwner, resolver, batchSubdomainRegistration;
+contract('Batch Subdomain Registrar', async (accounts) => {
+  let rns, resolver, batchSubdomainRegistrar;
+
   const rootDomain = 'javi.rsk';
   const rootDomainNode = namehash('javi.rsk');
 
   beforeEach(async () => {
-    const rootNode = namehash('rsk');
-
     rns = await RNS.new();
     resolver = await PublicResolver.new(rns.address);
+    batchSubdomainRegistrar = await BatchSubdomainRegistrar.new(rns.address, rootDomainNode);
 
-    rns.setDefaultResolver(resolver.address);
-    token = await Token.new(accounts[0], web3.utils.toBN('1000000000000000000000'));
-    tokenRegistrar = await TokenRegistrar.new(rns.address, rootNode, token.address);
+    await rns.setDefaultResolver(resolver.address);
 
-    rskOwner = await RSKOwner.new(
-      tokenRegistrar.address,
-      rns.address,
-      rootNode,
-    );
-
-    await rns.setSubnodeOwner('0x00', web3.utils.sha3('rsk'), rskOwner.address);
-
-    await rskOwner.addRegistrar(accounts[0]);
-
-    await rskOwner.register(web3.utils.sha3('javi'), accounts[0], 1);
-
-    batchSubdomainRegistration = await BatchSubdomainRegistration.new(rns.address, rootDomainNode);
-    
-    rns.setOwner(rootDomainNode, batchSubdomainRegistration.address);
+    await rns.setSubnodeOwner('0x00', web3.utils.sha3('rsk'), accounts[0]);
+    await rns.setSubnodeOwner(namehash('rsk'), web3.utils.sha3('javi'), batchSubdomainRegistrar.address);
   });
 
   it('should register one domain and its resolution', async () => {
     const name = 'test';
     const owner = accounts[4];
 
-    await batchSubdomainRegistration.register([owner], [web3.utils.sha3(name)])
-  
+    await batchSubdomainRegistrar.register([web3.utils.sha3(name)], [owner]);
+
     const actualOwner = await rns.owner(namehash(`${name}.${rootDomain}`));
     expect(actualOwner).to.eq(owner);
 
@@ -60,8 +42,8 @@ contract('BatchSubdomainRegistration', async (accounts) => {
     const owner1 = accounts[4];
     const owner2 = accounts[5];
 
-    await batchSubdomainRegistration.register([owner1, owner2], [web3.utils.sha3(name1), web3.utils.sha3(name2)])
-  
+    await batchSubdomainRegistrar.register([web3.utils.sha3(name1), web3.utils.sha3(name2)], [owner1, owner2]);
+
     const actualOwner1 = await rns.owner(namehash(`${name1}.${rootDomain}`));
     expect(actualOwner1).to.eq(owner1);
     const actualOwner2 = await rns.owner(namehash(`${name2}.${rootDomain}`));
@@ -78,8 +60,8 @@ contract('BatchSubdomainRegistration', async (accounts) => {
     const owner = accounts[4];
 
     await helpers.expectRevert(
-      batchSubdomainRegistration.register([owner], [web3.utils.sha3(name), web3.utils.sha3(name)]),
-      'Owners and labels arrays should contain same amount of elements'
+      batchSubdomainRegistrar.register([web3.utils.sha3(name), web3.utils.sha3(name)], [owner]),
+      'Labels and addrs should contain same amount of elements'
     );
   });
 
@@ -88,8 +70,8 @@ contract('BatchSubdomainRegistration', async (accounts) => {
     const owner = accounts[4];
 
     await helpers.expectRevert(
-      batchSubdomainRegistration.register([owner, owner], [web3.utils.sha3(name)]),
-      'Owners and labels arrays should contain same amount of elements'
+      batchSubdomainRegistrar.register([web3.utils.sha3(name)], [owner, owner]),
+      'Labels and addrs should contain same amount of elements'
     );
   });
 
@@ -99,9 +81,8 @@ contract('BatchSubdomainRegistration', async (accounts) => {
     const noOwner = accounts[5];
 
     await helpers.expectRevert(
-      batchSubdomainRegistration.register([owner], [web3.utils.sha3(name)], { from: noOwner }),
+      batchSubdomainRegistrar.register([web3.utils.sha3(name)], [owner], { from: noOwner }),
       'Ownable: caller is not the owner'
     );
   });
-
 });
