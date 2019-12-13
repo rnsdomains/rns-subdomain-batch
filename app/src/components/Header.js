@@ -1,28 +1,28 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Header = () => (
-  <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="."><img src="assets/img/logo.svg" class="logo" alt="logo" /></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+  <nav className="navbar navbar-expand-md navbar-light bg-light fixed-top">
+    <div className="container">
+      <a className="navbar-brand" href=".">
+        <img src="assets/img/logo.svg" className="logo" alt="logo" />
+      </a>
+      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+      <div className="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item active">
+            <Link className="nav-link" to="/">Home</Link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/setup">Setup</a>
+            <Link class="nav-link" to="/setup">Setup</Link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/subdomains">Create subdomains</a>
+            <Link class="nav-link" to="/subdomains">Create subdomains</Link>
           </li>
           <li class="nav-item">
-              <a class="nav-link" href="/faq">FAQ</a>
-          </li>
-          <li class="nav-item">
-            <button class="btn btn btn-primary my-2 my-sm-0" data-toggle="modal" data-target="#dialogo1">Start</button>
+              <Link class="nav-link" to="/faq">FAQ</Link>
           </li>
         </ul>
       </div>
