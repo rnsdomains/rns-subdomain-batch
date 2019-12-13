@@ -1,10 +1,85 @@
-import React from 'react';
-import { Container } from 'react-bootstrap';
+import React, { Component } from 'react';
+import {
+  Form,
+  Container,
+  Button,
+  InputGroup,
+  FormControl,
+  FormGroup,
+} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-export const Home = () => (
-  <Container>
-    <div class="col-lg-12 text-center main-title-box">
-      <h1><b>RNS Subdomains</b></h1>
-    </div>
-  </Container>
-);
+export default class extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      domain: '',
+    };
+
+    this.handleChangeDomain = this.handleChangeDomain.bind(this);
+  }
+
+  handleChangeDomain(event) {
+    this.setState({ domain: event.target.value });
+  }
+
+  render() {
+    const { domain } = this.state;
+
+    return (
+      <Container>
+        <div className="col-lg-12 text-center main-title-box">
+          <h1><b>RNS Subdomains</b></h1>
+          <p>
+            Use this tool to create subdomains in batch.
+          </p>
+          <hr />
+          <h3>Requirements</h3>
+          <ol>
+            <li>
+              An RNS name
+              <Form onSubmit={(event) => {
+                event.preventDefault();
+                window.location.href(`https://manager.rns.rifos.org/register?name=${domain}`);
+              }}
+              >
+                <FormGroup>
+                  <InputGroup>
+                    <FormControl type="text" onChange={this.handleChangeDomain} />
+                    <InputGroup.Append>
+                      <Button type="submit">Register</Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </FormGroup>
+              </Form>
+            </li>
+            <li>
+              <a
+                href="https://chrome.google.com/webstore/detail/nifty-wallet/jbdaocneiiinmjbjlgalhcelgbejmnid"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Nifty Wallet
+              </a>
+              {' '}
+(recommended) or
+              <a
+                href="https://metamask.io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+Metamask
+              </a>
+            </li>
+            <li>
+              <Link to="/setup">Setup</Link>
+              {' '}
+your domain
+            </li>
+          </ol>
+        </div>
+      </Container>
+    );
+  }
+}

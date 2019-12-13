@@ -1,10 +1,42 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-export const Setup = () => (
+export default () => (
   <Container>
-    <div class="col-lg-12 text-center main-title-box">
-      <h1><b>Setup registration</b></h1>
+    <div className="col-lg-12 text-center main-title-box">
+      <h1><b>Setup</b></h1>
+      <ol>
+        <li>
+          <p>
+            Transfer ownership to Subdomain Registrar.
+            {' '}
+            <br />
+            Subdomain Registrar will sponsor your domain momentarily
+            to register subdomains in batch.
+          </p>
+          <Button>Transfer</Button>
+        </li>
+        <li>
+          <p>
+            Make your
+            {' '}
+            <code>csv</code>
+            {' '}
+compatible.
+            {' '}
+            <br />
+            <ul>
+              <li>First column contains domains</li>
+              <li>Second column contains addresses</li>
+            </ul>
+            <i>Any incompatible name will be notified before registration</i>
+          </p>
+        </li>
+        <li>
+          <Link to="/subdomains">Register subdomains!</Link>
+        </li>
+      </ol>
     </div>
   </Container>
 );
