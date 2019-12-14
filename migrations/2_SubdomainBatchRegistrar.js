@@ -1,6 +1,6 @@
 const RNS = artifacts.require('RNS');
 const PublicResolver = artifacts.require('PublicResolver');
-const BatchSubdomainRegistrar = artifacts.require('BatchSubdomainRegistrar');
+const SubdomainBatchRegistrar = artifacts.require('SubdomainBatchRegistrar');
 
 const namehash = require('eth-ens-namehash').hash;
 
@@ -16,7 +16,7 @@ module.exports = (deployer, network, accounts) => {
     if (network === 'develop' || network === 'ganache') {
       rns = await deployer.deploy(RNS);
       resolver = await deployer.deploy(PublicResolver, rns.address);
-      registrar = await deployer.deploy(BatchSubdomainRegistrar, rns.address, namehash(rootDomain));
+      registrar = await deployer.deploy(SubdomainBatchRegistrar, rns.address);
 
       await rns.setDefaultResolver(resolver.address);
 
@@ -27,9 +27,9 @@ module.exports = (deployer, network, accounts) => {
       await rns.setSubnodeOwner('0x00', web3.utils.sha3(rootDomain[1]), accounts[0]);
       await rns.setSubnodeOwner(namehash(rootDomain[1]), web3.utils.sha3(rootDomain[2]), registrar.address);
     } else if (network === 'testnet') {
-      await deployer.deploy(BatchSubdomainRegistrar, '0x7d284aaac6e925aad802a53c0c69efe3764597b8', namehash(rootDomain));
+      await deployer.deploy(SubdomainBatchRegistrar, '0x7d284aaac6e925aad802a53c0c69efe3764597b8');
     } else if (network === 'mainnet') {
-      await deployer.deploy(BatchSubdomainRegistrar, '0xcb868aeabd31e2b66f74e9a55cf064abb31a4ad5', namehash(rootDomain));
+      await deployer.deploy(SubdomainBatchRegistrar, '0xcb868aeabd31e2b66f74e9a55cf064abb31a4ad5');
     }
   });
 }

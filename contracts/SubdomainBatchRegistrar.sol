@@ -4,20 +4,18 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./testing/AbstractRNS.sol";
 import "./testing/AbstractAddrResolver.sol";
 
-contract BatchSubdomainRegistrar is Ownable {
+contract SubdomainBatchRegistrar is Ownable {
     AbstractRNS private rns;
-    bytes32 private rootNode;
 
-    constructor (AbstractRNS _rns, bytes32 _rootNode) public {
+    constructor (AbstractRNS _rns) public {
         rns = _rns;
-        rootNode = _rootNode;
     }
 
     /// @notice Sets subdomains owners and addr resolutions for given names.
     /// @dev Only owner.
     /// @param labels The array of labels to register.
     /// @param addrs The owner and addr resolution for matching index labels.
-    function register(bytes32[] calldata labels, address[] calldata addrs) external onlyOwner {
+    function register(bytes32 rootNode, bytes32[] calldata labels, address[] calldata addrs) external onlyOwner {
         require(labels.length == addrs.length, "Labels and addrs should contain same amount of elements");
 
         AbstractAddrResolver resolver;
