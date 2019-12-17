@@ -77,6 +77,13 @@ contract SubdomainBatchRegistrar {
         return approvedToRegister[node][registrant];
     }
 
+    /// @notice Recover rns node ownership.
+    /// @dev Only node owner.
+    /// @param node Node to recover ownership of.
+    function recover(bytes32 node) external onlyNodeOwner(node) {
+        rns.setOwner(node, nodeOwner[node]);
+    }
+
     /****************/
     /* Registration */
     /****************/

@@ -6,7 +6,7 @@ const namehash = require('eth-ens-namehash').hash;
 const expect = require('chai').expect;
 const helpers = require('@openzeppelin/test-helpers');
 
-contract('Subdomain Batch Registrar', async (accounts) => {
+contract('Subdomain Batch Registrar - register', async (accounts) => {
   let rns, resolver, registrar;
 
   const rootDomain = 'javi.rsk';
