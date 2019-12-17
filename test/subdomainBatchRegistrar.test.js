@@ -20,14 +20,26 @@ contract('Subdomain Batch Registrar', async (accounts) => {
     await rns.setDefaultResolver(resolver.address);
 
     await rns.setSubnodeOwner('0x00', web3.utils.sha3('rsk'), accounts[0]);
-    await rns.setSubnodeOwner(namehash('rsk'), web3.utils.sha3('javi'), registrar.address);
+    await rns.setSubnodeOwner(namehash('rsk'), web3.utils.sha3('javi'), accounts[0]);
+    await registrar.claim(rootDomainNode);
+    await rns.setOwner(rootDomainNode, registrar.address);
   });
+
+  it('should not allow not registrant to register', async () => {
+    const name = 'attack';
+    const owner = accounts[4];
+
+    await helpers.expectRevert(
+      registrar.register(rootDomainNode, [web3.utils.sha3(name)], [owner], { from: owner }),
+      'Only approved to register',
+    );
+  })
 
   it('should register one domain and its resolution', async () => {
     const name = 'test';
     const owner = accounts[4];
 
-    await registrar.register(rootDomainNode,[web3.utils.sha3(name)], [owner]);
+    await registrar.register(rootDomainNode, [web3.utils.sha3(name)], [owner]);
 
     const actualOwner = await rns.owner(namehash(`${name}.${rootDomain}`));
     expect(actualOwner).to.eq(owner);
@@ -75,14 +87,10 @@ contract('Subdomain Batch Registrar', async (accounts) => {
     );
   });
 
-  it('should allow only owner of the contract to register names', async () => {
-    const name = 'test';
-    const owner = accounts[4];
-    const noOwner = accounts[5];
-
+  it('should allow not allow not registrant to register subdomains', async () => {
     await helpers.expectRevert(
-      registrar.register(rootDomainNode, [web3.utils.sha3(name)], [owner], { from: noOwner }),
-      'Ownable: caller is not the owner'
+      registrar.register(rootDomainNode, [web3.utils.sha3('test')], [accounts[5]], { from: accounts[5] }),
+      'Only approved to register'
     );
   });
 });
