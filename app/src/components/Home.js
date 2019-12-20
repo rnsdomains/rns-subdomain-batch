@@ -36,48 +36,42 @@ export default class extends Component {
           </p>
           <hr />
           <h3>Requirements</h3>
-          <ol>
-            <li>
-              An RNS name
-              <Form onSubmit={(event) => {
-                event.preventDefault();
-                window.location.href(`https://manager.rns.rifos.org/register?name=${domain}`);
-              }}
-              >
-                <FormGroup>
-                  <InputGroup>
-                    <FormControl type="text" onChange={this.handleChangeDomain} />
-                    <InputGroup.Append>
-                      <Button type="submit">Register</Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </FormGroup>
-              </Form>
-            </li>
-            <li>
-              <a
-                href="https://chrome.google.com/webstore/detail/nifty-wallet/jbdaocneiiinmjbjlgalhcelgbejmnid"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Nifty Wallet
-              </a>
-              {' '}
-(recommended) or
-              <a
-                href="https://metamask.io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-Metamask
-              </a>
-            </li>
-            <li>
-              <Link to="/setup">Setup</Link>
-              {' '}
-your domain
-            </li>
-          </ol>
+          <a
+            href="https://chrome.google.com/webstore/detail/nifty-wallet/jbdaocneiiinmjbjlgalhcelgbejmnid"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Nifty Wallet
+          </a>
+          {' (recommended) or '}
+          <a
+            href="https://metamask.io"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Metamask
+          </a>
+          <hr />
+          An RNS name
+          <br />
+          <i>Skip this if you already own one with your browser wallet.</i>
+          <Form onSubmit={(event) => {
+            event.preventDefault();
+            window.location.href(`https://manager.rns.rifos.org/register?name=${domain}`);
+          }}
+          >
+            <FormGroup>
+              <InputGroup>
+                <FormControl type="text" onChange={this.handleChangeDomain} />
+                <InputGroup.Append>
+                  <Button type="submit">Register</Button>
+                </InputGroup.Append>
+              </InputGroup>
+            </FormGroup>
+          </Form>
+          <hr />
+          <Link to="/setup">Setup</Link>
+          {' your domain'}
         </div>
       </Container>
     );
