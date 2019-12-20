@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
 } from 'react-router-dom';
@@ -14,25 +13,14 @@ import {
 } from './components';
 
 export default () => (
-  <Router>
+  <>
     <Header />
     <Switch>
-      <Route path="/home">
-        <Home />
-      </Route>
-      <Route path="/setup">
-        <Setup />
-      </Route>
-      <Route path="/subdomains">
-        <Subdomains />
-      </Route>
-      <Route path="/faq">
-        <FAQ />
-      </Route>
-      <Route path="/">
-        <Home />
-      </Route>
+      <Route path="/setup" render={() => <Setup />} />
+      <Route path="/subdomains" render={() => <Subdomains />} />
+      <Route path="/faq" render={() => <FAQ />} />
+      <Route path="/" render={() => <Home />} />
     </Switch>
     <Footer />
-  </Router>
+  </>
 );
