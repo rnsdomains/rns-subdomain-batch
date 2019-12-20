@@ -46,7 +46,7 @@ const Setup = ({ domain, claimed, transferred }) => (
             <p>
             Please
               {' '}
-              <Link to="/validate">validate your csv files</Link>
+              <Link to="/subdomains">validate your csv files</Link>
               {' '}
 before executing any registration.
             </p>
