@@ -1,20 +1,25 @@
 import React from 'react';
 import { Button, Form, FormGroup } from 'react-bootstrap';
-import { transferToRegistrar } from '../operations';
 import { connect } from 'react-redux';
+import { transferToRegistrar } from '../operations';
 import Tx from './Tx';
 
-const TransferToRegistrarComponent = ({ enabled, transferToRegistrar, transferring, tx, error }) => {
+const TransferToRegistrarComponent = ({
+  enabled, transfer, transferring, tx, error,
+}) => {
   const disabled = !enabled || transferring;
 
   return (
-    <Form onSubmit={e => {
+    <Form onSubmit={(e) => {
       e.preventDefault();
-      transferToRegistrar();
-    }}>
-      {!tx && <FormGroup>
+      transfer();
+    }}
+    >
+      {!tx && (
+      <FormGroup>
         <Button type="submit" className={disabled && 'btn-info'} disabled={disabled}>Transfer</Button>
-      </FormGroup>}
+      </FormGroup>
+      )}
       {tx && <small className="text-success"><Tx tx={tx.transactionHash} /></small>}
       {error && <small className="text-danger">{error.message}</small>}
     </Form>
@@ -27,14 +32,14 @@ const mapStateToProps = ({ app }) => ({
   from: app.owner,
 });
 
-const mapDispatchToProps = dispatch => ({
-  transferToRegistrar: (domain, from) => dispatch(transferToRegistrar(domain, from)),
+const mapDispatchToProps = (dispatch) => ({
+  transfer: (domain, from) => dispatch(transferToRegistrar(domain, from)),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
   ...stateProps,
-  transferToRegistrar: () => dispatchProps.transferToRegistrar(stateProps.domain, stateProps.from),
+  transfer: () => dispatchProps.transfer(stateProps.domain, stateProps.from),
 });
 
 export default connect(

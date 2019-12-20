@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import {
-  REQUEST_VALIDATE_OWNERSHIP, RECEIVE_VALIDATE_OWNERSHIP, ERROR_VALIDATE_OWNERSHIP, CLEAN_VALIDATE_OWNERSHIP,
+  REQUEST_VALIDATE_OWNERSHIP, RECEIVE_VALIDATE_OWNERSHIP,
+  ERROR_VALIDATE_OWNERSHIP, CLEAN_VALIDATE_OWNERSHIP,
   REQUEST_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
 } from './types';
@@ -62,8 +63,8 @@ const reducer = (state = initialState, action) => {
       validateOwnership: {
         loading: false,
         error: null,
-      }
-    }
+      },
+    };
     case REQUEST_CLAIM: return {
       ...state,
       claim: {

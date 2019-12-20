@@ -1,14 +1,17 @@
 import React from 'react';
 import { Button, Form, FormGroup } from 'react-bootstrap';
-import { claim } from '../operations';
 import { connect } from 'react-redux';
+import { bathRegistrarClaim } from '../operations';
 import Tx from './Tx';
 
-const ClaimComponent = ({ claim, claiming, tx, error }) => (
-  <Form onSubmit={e => {
+const ClaimComponent = ({
+  claim, claiming, tx, error,
+}) => (
+  <Form onSubmit={(e) => {
     e.preventDefault();
     claim();
-  }}>
+  }}
+  >
     {!tx && <FormGroup><Button type="submit" disabled={claiming}>Claim</Button></FormGroup>}
     {tx && <small className="text-success"><Tx tx={tx.transactionHash} /></small>}
     {error && <small className="text-danger">{error.message}</small>}
@@ -21,8 +24,8 @@ const mapStateToProps = ({ app }) => ({
   from: app.owner,
 });
 
-const mapDispatchToProps = dispatch => ({
-  claim: (domain, from) => dispatch(claim(domain, from)),
+const mapDispatchToProps = (dispatch) => ({
+  claim: (domain, from) => dispatch(bathRegistrarClaim(domain, from)),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({
