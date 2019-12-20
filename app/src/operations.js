@@ -1,5 +1,9 @@
 import Web3 from 'web3';
-import { requestValidateOwnership, receiveValidateOwnership, errorValidateOwnership } from './actions';
+import {
+  requestValidateOwnership, receiveValidateOwnership, errorValidateOwnership,
+  requestTransferToRegistrar, receiveTransferToRegistrar, errorTransferToRegistrar,
+  requestClaim, receiveClaim, errorClaim,
+} from './actions';
 import namehash from 'eth-ens-namehash';
 
 // This method will validate ownrship of the domain with
@@ -36,9 +40,63 @@ export const validateOwnership = (domain) => dispatch => {
     const owner = _owner.toLowerCase();
 
     if(owner === account)
-      dispatch(receiveValidateOwnership(domain));
+      dispatch(receiveValidateOwnership(domain, owner));
     else
       dispatch(errorValidateOwnership('Not owner'));
   })
   .catch(errorValidateOwnership);
 };
+
+export const claim = (domain, from) => dispatch => {
+  dispatch(requestClaim());
+
+  const web3 = new Web3(window.web3);
+
+  const registrar = new web3.eth.Contract([
+    {
+      constant: false,
+      inputs: [
+        { name: 'node', type: 'bytes32' }
+      ],
+      name: "claim",
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ], process.env.REACT_APP_BATCH_REGISTRAR);
+
+  const node = namehash.hash(domain);
+
+
+  return registrar.methods.claim(node).send({ from })
+  .then(tx => dispatch(receiveClaim(tx)))
+  .catch(error => dispatch(errorClaim(error)));
+}
+
+export const transferToRegistrar = (domain, from) => dispatch => {
+  dispatch(requestTransferToRegistrar());
+
+  const web3 = new Web3(window.web3);
+
+  const rns = new web3.eth.Contract([
+    {
+      constant: false,
+      inputs: [
+        { name: 'node', type: 'bytes32' },
+        { name: 'ownerAddress', type: 'address' }
+      ],
+      name: 'setOwner',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ], process.env.REACT_APP_RNS_REGISTRY);
+
+  const node = namehash.hash(domain);
+
+  return rns.methods.setOwner(node, process.env.REACT_APP_BATCH_REGISTRAR).send({ from })
+  .then(tx => dispatch(receiveTransferToRegistrar(tx)))
+  .catch(error => dispatch(errorTransferToRegistrar(error)));
+}

@@ -1,10 +1,12 @@
 import React from 'react';
-import { Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import ValidateOwnership from './ValidateOwnership';
 import { connect } from 'react-redux';
+import { Container } from 'react-bootstrap';
+import ValidateOwnership from './ValidateOwnership';
+import Claim from './Claim';
+import TransferToRegistrar from './TransferToRegistrar';
+import { Link } from 'react-router-dom';
 
-const Setup = ({ domain }) => (
+const Setup = ({ domain, claimed, transferred }) => (
   <Container>
     <div className="col-lg-12 text-center main-title-box">
       <h1><b>Setup</b></h1>
@@ -21,30 +23,34 @@ const Setup = ({ domain }) => (
         domain &&
         <React.Fragment>
           <hr />
+          <p>Now you have to execute 2 transactions. You need to do this just once.</p>
+          <p>Claim your domain in the batch registrar contract.</p>
+          <Claim />
+          <p>Transfer ownership to Subdomain Registrar.</p>
+          <TransferToRegistrar enabled={claimed} />
+          <i>
+            Subdomain Registrar will sponsor your domain momentarily
+            to register subdomains in batch.
+          </i>
+        </React.Fragment>
+      }
+      {
+        domain && transferred &&
+        <React.Fragment>
+          <hr />
           <p>
-            Transfer ownership to Subdomain Registrar.
-            <i>Subdomain Registrar will sponsor your domain momentarily
-            to register subdomains in batch.</i>
+            Please <Link to="/validate">validate your csv files</Link> before executing any registration.
           </p>
-          <Button>Transfer</Button>
-          {'Make your '}
-          <code>csv</code>
-          {' compatible.'}
-          <br />
-          <ul>
-            <li>First column contains domains</li>
-            <li>Second column contains addresses</li>
-          </ul>
-          <i>Any incompatible name will be notified before registration</i>
-          <Link to="/subdomains">Register subdomains!</Link>
         </React.Fragment>
       }
     </div>
   </Container>
 );
 
-const mapStateToProps = (state) => ({
-  domain: state.app.domain,
+const mapStateToProps = ({ app }) => ({
+  domain: app.domain,
+  claimed: !!app.claim.tx,
+  transferred: !!app.transferToRegistrar.tx,
 });
 
 export default connect(mapStateToProps)(Setup);
