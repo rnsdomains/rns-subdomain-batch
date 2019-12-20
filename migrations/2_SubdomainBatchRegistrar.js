@@ -5,9 +5,6 @@ const SubdomainBatchRegistrar = artifacts.require('SubdomainBatchRegistrar');
 const namehash = require('eth-ens-namehash').hash;
 
 const indexOfRootDomain = process.argv.indexOf('--rootNode');
-let rootDomain = 'javi.rsk';
-if (indexOfRootDomain !== -1)
-  rootDomain = process.argv[indexOfRootDomain + 1];
 
 module.exports = (deployer, network, accounts) => {
   return deployer.then(async () => {
@@ -20,12 +17,8 @@ module.exports = (deployer, network, accounts) => {
 
       await rns.setDefaultResolver(resolver.address);
 
-      const labels = rootDomain.split('.');
-      if (labels.length > 2)
-        process.exit('Use only 2 labels for dev.');
-
-      await rns.setSubnodeOwner('0x00', web3.utils.sha3(rootDomain[1]), accounts[0]);
-      await rns.setSubnodeOwner(namehash(rootDomain[1]), web3.utils.sha3(rootDomain[2]), registrar.address);
+      await rns.setSubnodeOwner('0x00', web3.utils.sha3('rsk'), accounts[0]);
+      await rns.setSubnodeOwner(namehash('rsk'), web3.utils.sha3('javi'), accounts[0]);
     } else if (network === 'testnet') {
       await deployer.deploy(SubdomainBatchRegistrar, '0x7d284aaac6e925aad802a53c0c69efe3764597b8');
     } else if (network === 'mainnet') {
