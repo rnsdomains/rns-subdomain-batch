@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "./AbstractRNS.sol";
+import "@rsksmart/rns-registry/contracts/AbstractRNS.sol";
 
 /**
  * A simple resolver anyone can use; only allows the owner of a node to set its
@@ -12,7 +12,7 @@ contract PublicResolver {
     mapping(bytes32=>bytes32) hashes;
 
     modifier only_owner(bytes32 node) {
-        require(rns.owner(node) == msg.sender, "aca2");
+        require(rns.owner(node) == msg.sender);
         _;
     }
 
