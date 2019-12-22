@@ -7,6 +7,7 @@ import {
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
   REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH,
   NODE_OWNER, REGISTRANT, CONFIRM_PARSED,
+  REQUEST_REGISTER, RECEIVE_REGISTER, ERROR_REGISTER,
 } from './types';
 
 const initialState = {
@@ -33,6 +34,11 @@ const initialState = {
     error: null,
   },
   parsed: null,
+  register: {
+    tx: null,
+    error: null,
+    registering: false,
+  }
 };
 
 const reducer = (state = initialState, action) => {
@@ -136,6 +142,7 @@ const reducer = (state = initialState, action) => {
     case RECEIVE_AUTH: return {
       ...state,
       domain: action.domain,
+      owner: action.owner,
       auth: {
         authenticating: false,
         permissions: action.permissions,
@@ -155,6 +162,30 @@ const reducer = (state = initialState, action) => {
       ...state,
       parsed: action.parsed,
     }
+    case REQUEST_REGISTER: return {
+      ...state,
+      register: {
+        tx: null,
+        error: null,
+        registering: true,
+      },
+    };
+    case RECEIVE_REGISTER: return {
+      ...state,
+      register: {
+        tx: action.tx,
+        error: null,
+        registering: false,
+      },
+    };
+    case ERROR_REGISTER: return {
+      ...state,
+      register: {
+        tx: null,
+        error: action.error,
+        registering: false,
+      },
+    };
     default: return state;
   }
 };

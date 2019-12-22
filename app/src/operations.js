@@ -4,7 +4,7 @@ import {
   requestValidateOwnership, receiveValidateOwnership, errorValidateOwnership,
   requestTransferToRegistrar, receiveTransferToRegistrar, errorTransferToRegistrar,
   requestClaim, receiveClaim, errorClaim,
-  requestAuth, receiveAuth, errorAuth,
+  requestAuth, receiveAuth, errorAuth, requestRegister, receiveRegister, errorRegister,
 } from './actions';
 import { NODE_OWNER, REGISTRANT } from './types';
 
@@ -177,6 +177,44 @@ export const auth = (domain) => (dispatch) => {
       if(owner.toLowerCase() === account)
         permissions.push(NODE_OWNER);
     })
-    .then(() => dispatch(receiveAuth(domain, permissions)))
+    .then(() => dispatch(receiveAuth(domain, account, permissions)))
     .catch(error => dispatch(errorAuth(error)));
+}
+
+export const register = (domain, labels, addresses, from) => (dispatch) => {
+  console.log(from)
+  dispatch(requestRegister());
+
+  const web3 = new Web3(window.web3);
+
+  const registrar = new web3.eth.Contract([
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "rootNode",
+          "type": "bytes32"
+        },
+        {
+          "name": "labels",
+          "type": "bytes32[]"
+        },
+        {
+          "name": "addrs",
+          "type": "address[]"
+        }
+      ],
+      "name": "register",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ], process.env.REACT_APP_BATCH_REGISTRAR);
+
+  const node = namehash.hash(domain);
+
+  return registrar.methods.register(node, labels, addresses).send({ from })
+  .then((tx) => dispatch(receiveRegister(tx)))
+  .catch((error) => dispatch(errorRegister(error)));
 }

@@ -162,13 +162,7 @@ class Subdomains extends Component {
   handleDownloadParsed() {
     const { parsed } = this.state;
 
-    const date = new Date(Date.now());
-
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    download(`subdomains-${year}-${month >= 10 ? month : `0${month}`}-${day}.csv`, parsedToCsv(parsed));
+    download(`subdomains-${Date.now()}.csv`, parsedToCsv(parsed));
   }
 
   accept() {

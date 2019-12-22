@@ -4,6 +4,7 @@ import {
   REQUEST_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
   REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH, CONFIRM_PARSED,
+  REQUEST_REGISTER, RECEIVE_REGISTER, ERROR_REGISTER,
 } from './types';
 
 export const requestValidateOwnership = () => ({
@@ -57,9 +58,10 @@ export const requestAuth = () => ({
   type: REQUEST_AUTH,
 });
 
-export const receiveAuth = (domain, permissions) => ({
+export const receiveAuth = (domain, owner, permissions) => ({
   type: RECEIVE_AUTH,
   domain,
+  owner,
   permissions,
 });
 
@@ -71,4 +73,18 @@ export const errorAuth = (error) => ({
 export const confirmParsed = (parsed) => ({
   type: CONFIRM_PARSED,
   parsed,
+});
+
+export const requestRegister = () => ({
+  type: REQUEST_REGISTER,
+});
+
+export const receiveRegister = (tx) => ({
+  type: RECEIVE_REGISTER,
+  tx,
+});
+
+export const errorRegister = (error) => ({
+  type: ERROR_REGISTER,
+  error,
 });
