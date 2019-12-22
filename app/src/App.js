@@ -13,6 +13,7 @@ import {
   FAQ,
   Auth,
   NotFound,
+  Register,
 } from './components';
 import Admin from './components/Admin';
 import { connect } from 'react-redux';
@@ -25,6 +26,7 @@ const App = ({ showRegister, showAdmin }) => (
       <Route exact path="/" render={() => <Home />} />
       <Route path="/setup" render={() => <Setup />} />
       <Route path="/subdomains" render={() => showRegister ? <Subdomains /> : <Redirect to="/login" />} />
+      <Route path="/register" render={() => showRegister ? <Register /> : <Redirect to="/login" />} />
       <Route path="/admin" render={() => showAdmin ? <Admin /> : <Redirect to="/login" />} />
       <Route path="/login" render={() => <Auth />} />
       <Route path="/faq" render={() => <FAQ />} />

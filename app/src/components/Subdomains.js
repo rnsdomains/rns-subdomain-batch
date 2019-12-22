@@ -5,28 +5,63 @@ import {
 import CSVReader from 'react-csv-reader';
 import { isAddress } from 'web3-utils';
 import { connect } from 'react-redux';
+import { isValidLabel } from '../lib';
+import { confirmParsed } from '../actions';
+import { push } from 'connected-react-router';
 
 const parseSolvedErrors = (errors) => {
-  let error = '';
+  let error = [];
 
-  if (errors.labelNoSpaces) error += 'No spaces\n';
+  if (errors.labelNoSpaces) error.push('No spaces');
+  if (errors.labelToLower) error.push('Lower cases');
+  if (errors.noMails) error.push('No mails');
+  if (errors.labelsNoEnie) error.push('No \'ñ\'');
+  if (errors.noSeparators) error.push('No _ - . ,')
+  if (errors.noTilde) error.push('No \'')
 
-  if (errors.labelToLower) error += 'Lower cases\n';
-
-  if (errors.noMails) error += 'No mails\n';
-
-  if (errors.labelsNoEnie) error += 'No \'ñ\'\n';
-
-  return error.trim();
+  return error.map(e => (
+    <p key={e}>
+      {e}
+      <br />
+    </p>
+  ));
 };
 
 const parseUnsolvedErrors = (errors) => {
-  let error = '';
+  let error = [];
 
-  if (errors.invalidAddress) error += 'Invalid address\n';
+  if (errors.invalidAddress) error.push('Invalid address');
+  if (errors.invalidLabel) error.push('Invalid label');
 
-  return error.trim();
+  return error.map(e => (
+    <p key={e}>
+      {e}
+      <br />
+    </p>
+  ));
 };
+
+const parsedToCsv = (parsed) => {
+  let result = '';
+
+  for (let i = 0; i < parsed.length; i += 1)
+    result += `${parsed[i][0]},${parsed[i][0]}\n`;
+
+  return result;
+}
+
+const download = (filename, text) => {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
 
 class Subdomains extends Component {
   constructor(props) {
@@ -35,13 +70,14 @@ class Subdomains extends Component {
     this.state = {
       validating: false,
       data: null,
-      allSolvedConflicts: null,
-      allUnsolvedConflicts: null,
+      allSolvedConflicts: [],
+      allUnsolvedConflicts: [],
       parsed: null,
-      accepted: false,
     };
 
     this.handleUploadFile = this.handleUploadFile.bind(this);
+    this.accept = this.accept.bind(this);
+    this.handleDownloadParsed = this.handleDownloadParsed.bind(this);
     this.accept = this.accept.bind(this);
   }
 
@@ -54,41 +90,64 @@ class Subdomains extends Component {
     const parsed = [];
 
     for (let i = 0; i < data.length; i += 1) {
-      let [domain, address] = data[i];
+      let [label, address] = data[i];
 
       const solvedConflicts = {};
       const unsolvedConflicts = {};
 
-      if (domain.indexOf(' ') >= 0) {
-        domain = domain.replace(/ /g, '');
+      // solvable
+      if (label.indexOf(' ') >= 0) {
+        label = label.replace(/ /g, '');
         solvedConflicts.labelNoSpaces = true;
       }
 
-      if (domain !== domain.toLowerCase()) {
-        domain = domain.toLowerCase();
+      if (label !== label.toLowerCase()) {
+        label = label.toLowerCase();
         solvedConflicts.labelToLower = true;
       }
 
-      const indexOfAt = domain.indexOf('@');
+      const indexOfAt = label.indexOf('@');
       if (indexOfAt >= 0) {
-        domain = domain.slice(0, indexOfAt);
+        label = label.slice(0, indexOfAt);
         solvedConflicts.noMails = true;
       }
 
-      if (domain.indexOf('ñ') >= 0) {
-        domain = domain.replace(/(ñ)/g, 'n');
+      if (label.indexOf('ñ') >= 0) {
+        label = label.replace(/(ñ)/g, 'n');
         solvedConflicts.labelsNoEnie = true;
       }
 
+      if(label.match(/[-_.,]/g)) {
+        label = label.replace(/(\.)/g, '');
+        label = label.replace(/(_)/g, '');
+        label = label.replace(/(-)/g, '');
+        label = label.replace(/(,)/g, '');
+        solvedConflicts.noSeparators = true;
+      }
+
+      if(label.match(/[áéíóúü]/g)) {
+        label = label.replace(/(á)/g, 'a');
+        label = label.replace(/(é)/g, 'e');
+        label = label.replace(/(í)/g, 'i');
+        label = label.replace(/(ó)/g, 'o');
+        label = label.replace(/(ú)/g, 'u');
+        label = label.replace(/(ü)/g, 'u');
+        solvedConflicts.noTilde = true;
+      }
+
+      // unsolvable
       address = address.toLowerCase();
 
       if (!isAddress(address)) {
         unsolvedConflicts.invalidAddress = true;
       }
 
+      if (!isValidLabel(label))
+        unsolvedConflicts.invalidLabel = true;
+
       allSolvedConflicts.push(solvedConflicts);
       allUnsolvedConflicts.push(unsolvedConflicts);
-      parsed.push([domain, address]);
+      parsed.push([label, address]);
     }
 
     this.setState({
@@ -100,8 +159,24 @@ class Subdomains extends Component {
     });
   }
 
+  handleDownloadParsed() {
+    const { parsed } = this.state;
+
+    const date = new Date(Date.now());
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    download(`subdomains-${year}-${month >= 10 ? month : `0${month}`}-${day}.csv`, parsedToCsv(parsed));
+  }
+
   accept() {
-    this.setState({ accepted: true });
+    const { confirmParsed, goToRegister } = this.props;
+    const { parsed } = this.state;
+
+    confirmParsed(parsed);
+    goToRegister();
   }
 
   render() {
@@ -111,8 +186,9 @@ class Subdomains extends Component {
       allSolvedConflicts,
       allUnsolvedConflicts,
       parsed,
-      accepted,
     } = this.state;
+
+    const anyUnsolved = allUnsolvedConflicts.length > 0 && allUnsolvedConflicts.some(c => Object.keys(c).length > 0);
 
     const { domain } = this.props;
 
@@ -139,32 +215,63 @@ file must include only two columns:
         </p>
         <CSVReader onFileLoaded={this.handleUploadFile} disabled={validating} />
         {validating && <Spinner animation="grow" />}
-        {!validating && parsed && !accepted && <Button onClick={this.accept}>Ok</Button>}
         {
-          !validating && parsed && !accepted
+          !validating && parsed && (
+            anyUnsolved ?
+            <p>
+              Some format conflict was found and not solved. Subdomains&#32;
+              Subdomains must be lowercase alfanumeric values and addresses&#32;
+              must be 20 bytes hex.
+            </p> :
+            <>
+              <p>
+                All found conflicts were solved. <Button variant="link" onClick={this.handleDownloadParsed}>Download</Button> the&#32;
+                resultant <code>csv</code> file.
+              </p>
+              <Button onClick={this.accept}>Register!</Button>
+            </>
+          )
+        }
+        <hr />
+        {
+          !validating && parsed
           && (
-          <Table>
-            <thead>
-              <tr>
-                <th>input</th>
-                <th>solved conflicts</th>
-                <th>unsolved conflicts</th>
-                <th>to register</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                data.map((value, index) => (
-                  <tr key={value[1]}>
-                    <td>{`(${value[0]}, ${value[1]})`}</td>
-                    <td className={Object.keys(allSolvedConflicts[index]).length > 0 ? 'table-warning' : ''}><p>{parseSolvedErrors(allSolvedConflicts[index])}</p></td>
-                    <td className={Object.keys(allUnsolvedConflicts[index]).length > 0 ? 'table-error' : ''}><p>{parseUnsolvedErrors(allUnsolvedConflicts[index])}</p></td>
-                    <td><p>{`(${parsed[index][0]}.${domain}, ${parsed[index][1]})`}</p></td>
+            <>
+              <p>Check all solved conflicts in yellow and unsolved in red.</p>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>input</th>
+                    <th>solved conflicts</th>
+                    <th>unsolved conflicts</th>
+                    <th>to register</th>
                   </tr>
-                ))
-              }
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {
+                    data.map((value, index) => (
+                      <tr
+                        key={value[1]}
+                        className={
+                          Object.keys(allUnsolvedConflicts[index]).length > 0 ?
+                          'table-danger' :
+                          (
+                            Object.keys(allSolvedConflicts[index]).length > 0 ?
+                            'table-warning' :
+                            ''
+                          )
+                        }
+                      >
+                        <td>{`(${value[0]}, ${value[1]})`}</td>
+                        <td ><p>{parseSolvedErrors(allSolvedConflicts[index])}</p></td>
+                        <td><p>{parseUnsolvedErrors(allUnsolvedConflicts[index])}</p></td>
+                        <td><p>{`(${parsed[index][0]}.${domain}, ${parsed[index][1]})`}</p></td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </Table>
+            </>
           )
         }
         <hr />
@@ -177,4 +284,12 @@ const mapStateToProps = ({ app }) => ({
   domain: app.domain,
 });
 
-export default connect(mapStateToProps)(Subdomains);
+const mapDispatchToProps = (dispatch) => ({
+  confirmParsed: (parsed) => dispatch(confirmParsed(parsed)),
+  goToRegister: () => dispatch(push('/register')),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Subdomains);

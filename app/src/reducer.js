@@ -6,7 +6,7 @@ import {
   REQUEST_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
   REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH,
-  NODE_OWNER, REGISTRANT,
+  NODE_OWNER, REGISTRANT, CONFIRM_PARSED,
 } from './types';
 
 const initialState = {
@@ -32,6 +32,7 @@ const initialState = {
     authenticating: false,
     error: null,
   },
+  parsed: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -150,6 +151,10 @@ const reducer = (state = initialState, action) => {
         error: action.error,
       },
     };
+    case CONFIRM_PARSED: return {
+      ...state,
+      parsed: action.parsed,
+    }
     default: return state;
   }
 };

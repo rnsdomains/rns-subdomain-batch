@@ -16,3 +16,5 @@ export const RECEIVE_AUTH = 'RECEIVE_AUTH';
 export const ERROR_AUTH = 'ERROR_AUTH';
 export const NODE_OWNER = 'NODE_OWNER';
 export const REGISTRANT = 'REGISTRANT';
+
+export const CONFIRM_PARSED = 'CONFIRM_PARSED';

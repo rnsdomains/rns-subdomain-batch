@@ -3,7 +3,7 @@ import {
   ERROR_VALIDATE_OWNERSHIP, CLEAN_VALIDATE_OWNERSHIP,
   REQUEST_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
-  REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH,
+  REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH, CONFIRM_PARSED,
 } from './types';
 
 export const requestValidateOwnership = () => ({
@@ -66,4 +66,9 @@ export const receiveAuth = (domain, permissions) => ({
 export const errorAuth = (error) => ({
   type: ERROR_AUTH,
   error,
+});
+
+export const confirmParsed = (parsed) => ({
+  type: CONFIRM_PARSED,
+  parsed,
 });
