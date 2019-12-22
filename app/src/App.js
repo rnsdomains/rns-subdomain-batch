@@ -10,6 +10,7 @@ import {
   Setup,
   Subdomains,
   FAQ,
+  Auth,
 } from './components';
 import Admin from './components/Admin';
 
@@ -21,6 +22,7 @@ export default () => (
       <Route path="/subdomains" render={() => <Subdomains />} />
       <Route path="/admin" render={() => <Admin />} />
       <Route path="/faq" render={() => <FAQ />} />
+      <Route path="/login" render={() => <Auth />} />
       <Route path="/" render={() => <Home />} />
     </Switch>
     <Footer />

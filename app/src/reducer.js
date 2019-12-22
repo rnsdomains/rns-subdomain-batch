@@ -5,6 +5,7 @@ import {
   ERROR_VALIDATE_OWNERSHIP, CLEAN_VALIDATE_OWNERSHIP,
   REQUEST_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
+  REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH,
 } from './types';
 
 const initialState = {
@@ -23,6 +24,11 @@ const initialState = {
   transferToRegistrar: {
     transferring: false,
     tx: null,
+    error: null,
+  },
+  auth: {
+    permissions: [],
+    authenticating: false,
     error: null,
   },
 };
@@ -110,6 +116,33 @@ const reducer = (state = initialState, action) => {
       transferToRegistrar: {
         transferring: false,
         tx: null,
+        error: action.error,
+      },
+    };
+    case REQUEST_AUTH: return {
+      ...state,
+      domain: null,
+      auth: {
+        authenticating: true,
+        permissions: [],
+        error: null,
+      },
+    };
+    case RECEIVE_AUTH: return {
+      ...state,
+      domain: action.domain,
+      auth: {
+        authenticating: false,
+        permissions: action.permissions,
+        error: null,
+      },
+    };
+    case ERROR_AUTH: return {
+      ...state,
+      domain: null,
+      auth: {
+        authenticating: false,
+        permissions: [],
         error: action.error,
       },
     };
