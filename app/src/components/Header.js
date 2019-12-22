@@ -9,6 +9,9 @@ const Header = ({ authenticatedAs, showRegister, showAdmin }) => (
       <a className="navbar-brand" href=".">
         <img src="assets/img/logo.svg" className="logo" alt="logo" />
       </a>
+      <h3>
+        Subdomain batch
+      </h3>
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon" />
       </button>

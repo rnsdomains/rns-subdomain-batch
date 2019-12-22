@@ -6,6 +6,7 @@ import {
   REQUEST_TRANSFER_TO_REGISTRAR, RECEIVE_TRANSFER_TO_REGISTRAR, ERROR_TRANSFER_TO_REGISTRAR,
   REQUEST_CLAIM, RECEIVE_CLAIM, ERROR_CLAIM,
   REQUEST_AUTH, RECEIVE_AUTH, ERROR_AUTH,
+  NODE_OWNER, REGISTRANT,
 } from './types';
 
 const initialState = {
@@ -110,6 +111,9 @@ const reducer = (state = initialState, action) => {
         tx: action.tx,
         error: null,
       },
+      auth: {
+        permissions: [NODE_OWNER, REGISTRANT]
+      }
     };
     case ERROR_TRANSFER_TO_REGISTRAR: return {
       ...state,
