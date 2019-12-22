@@ -42,7 +42,7 @@ export const validateOwnership = (domain) => (dispatch) => {
       const owner = _owner.toLowerCase();
 
       if (owner === account) dispatch(receiveValidateOwnership(domain, owner));
-      else dispatch(errorValidateOwnership('Not owner'));
+      else dispatch(errorValidateOwnership('Not domain\'s owner'));
     })
     .catch(errorValidateOwnership);
 };

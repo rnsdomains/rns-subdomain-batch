@@ -38,18 +38,32 @@ class ValidateOwnershipComponent extends Component {
 
     return (
       <Form onSubmit={this.validate}>
-        <InputGroup>
-          <FormControl type="text" placeholder="domain.rsk" disabled={loading} onChange={this.handleChangeValue} />
-          <InputGroup.Append>
-            <Button type="submit" disabled={loading}>Validate</Button>
-          </InputGroup.Append>
-        </InputGroup>
-        {
-          loading && <Spinner variant="grow" />
-        }
-        {
-          error && <small className="text-danger">{error}</small>
-        }
+        <Form.Group>
+          <Form.Label>Choose the domain to register subdomains of</Form.Label>
+          <InputGroup>
+            <FormControl type="text" placeholder="domain.rsk" disabled={loading} onChange={this.handleChangeValue} />
+            <InputGroup.Append>
+              <Button type="submit" disabled={loading}>Validate</Button>
+            </InputGroup.Append>
+          </InputGroup>
+          {
+            loading && <Spinner variant="grow" />
+          }
+          {
+            error
+            && (
+              <>
+                <small className="text-danger">{error}</small>
+                <br />
+                <small>
+                  Check you are connected to RSK network with
+                  <span> </span>
+                  the owner&aposs wallet unlocked.
+                </small>
+              </>
+            )
+          }
+        </Form.Group>
       </Form>
     );
   }

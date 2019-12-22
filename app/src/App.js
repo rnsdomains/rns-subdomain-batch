@@ -11,6 +11,7 @@ import {
   Subdomains,
   FAQ,
 } from './components';
+import Admin from './components/Admin';
 
 export default () => (
   <>
@@ -18,6 +19,7 @@ export default () => (
     <Switch>
       <Route path="/setup" render={() => <Setup />} />
       <Route path="/subdomains" render={() => <Subdomains />} />
+      <Route path="/admin" render={() => <Admin />} />
       <Route path="/faq" render={() => <FAQ />} />
       <Route path="/" render={() => <Home />} />
     </Switch>
