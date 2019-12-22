@@ -4,11 +4,9 @@ const SubdomainBatchRegistrar = artifacts.require('SubdomainBatchRegistrar');
 
 const namehash = require('eth-ens-namehash').hash;
 
-const indexOfRootDomain = process.argv.indexOf('--rootNode');
-
 module.exports = (deployer, network, accounts) => {
   return deployer.then(async () => {
-    let rns, resolver, registrar;
+    let rns, resolver;
 
     if (network === 'develop' || network === 'ganache') {
       rns = await deployer.deploy(RNS);
