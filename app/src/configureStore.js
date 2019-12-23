@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import createRootReducer from './reducer';
 
-export const history = createBrowserHistory();
+export const history = createBrowserHistory({ basename: '/rns-subdomain-batch' });
 
 const middleware = [thunk, routerMiddleware(history)];
 

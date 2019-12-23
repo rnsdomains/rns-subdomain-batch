@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@openzeppelin/test-helpers": "^0.5.1",
+    "@truffle/hdwallet-provider": "^1.0.28",
     "chai": "^4.2.0",
     "eth-ens-namehash": "^2.0.8",
     "mem": ">=4.0.0"
