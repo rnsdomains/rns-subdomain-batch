@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/static/js/main.e219b658.chunk.js",
-    "main.js.map": "/static/js/main.e219b658.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.63c1efab.js",
-    "runtime-main.js.map": "/static/js/runtime-main.63c1efab.js.map",
-    "static/js/2.38246544.chunk.js": "/static/js/2.38246544.chunk.js",
-    "static/js/2.38246544.chunk.js.map": "/static/js/2.38246544.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.58fcce896cd1b31fc486f1317673b7f7.js": "/precache-manifest.58fcce896cd1b31fc486f1317673b7f7.js",
-    "service-worker.js": "/service-worker.js",
-    "static/js/2.38246544.chunk.js.LICENSE": "/static/js/2.38246544.chunk.js.LICENSE"
+    "main.js": "/rns-subdomain-batch/static/js/main.e2d394b9.chunk.js",
+    "main.js.map": "/rns-subdomain-batch/static/js/main.e2d394b9.chunk.js.map",
+    "runtime-main.js": "/rns-subdomain-batch/static/js/runtime-main.723c9c4c.js",
+    "runtime-main.js.map": "/rns-subdomain-batch/static/js/runtime-main.723c9c4c.js.map",
+    "static/js/2.8eadecf8.chunk.js": "/rns-subdomain-batch/static/js/2.8eadecf8.chunk.js",
+    "static/js/2.8eadecf8.chunk.js.map": "/rns-subdomain-batch/static/js/2.8eadecf8.chunk.js.map",
+    "index.html": "/rns-subdomain-batch/index.html",
+    "precache-manifest.14d4d7c1e4d9d7a672c2afeffc9a7e55.js": "/rns-subdomain-batch/precache-manifest.14d4d7c1e4d9d7a672c2afeffc9a7e55.js",
+    "service-worker.js": "/rns-subdomain-batch/service-worker.js",
+    "static/js/2.8eadecf8.chunk.js.LICENSE": "/rns-subdomain-batch/static/js/2.8eadecf8.chunk.js.LICENSE"
   },
   "entrypoints": [
-    "static/js/runtime-main.63c1efab.js",
-    "static/js/2.38246544.chunk.js",
-    "static/js/main.e219b658.chunk.js"
+    "static/js/runtime-main.723c9c4c.js",
+    "static/js/2.8eadecf8.chunk.js",
+    "static/js/main.e2d394b9.chunk.js"
   ]
 }
