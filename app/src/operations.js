@@ -181,9 +181,8 @@ export const auth = (domain) => (dispatch) => {
     .catch(error => dispatch(errorAuth(error)));
 }
 
-export const register = (domain, labels, addresses, from) => (dispatch) => {
-  console.log(from)
-  dispatch(requestRegister());
+export const register = (domain, labels, addresses, from, index) => (dispatch) => {
+  dispatch(requestRegister(index));
 
   const web3 = new Web3(window.web3);
 
@@ -215,6 +214,6 @@ export const register = (domain, labels, addresses, from) => (dispatch) => {
   const node = namehash.hash(domain);
 
   return registrar.methods.register(node, labels, addresses).send({ from })
-  .then((tx) => dispatch(receiveRegister(tx)))
-  .catch((error) => dispatch(errorRegister(error)));
+  .then((tx) => dispatch(receiveRegister(tx, index)))
+  .catch((error) => dispatch(errorRegister(error, index)));
 }

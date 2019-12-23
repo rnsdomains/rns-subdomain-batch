@@ -8,67 +8,65 @@ import {
   Button,
 } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { sha3 } from 'web3-utils';
 import { register } from '../operations';
 import Tx from './Tx';
 
-const Register = ({ dataSize, register, tx, error }) => (
+const Register = ({ register, data, registerResults }) => (
   <Container className="text-center">
     <div className="col-lg-12 main-title-box">
       <h1><b>Execute registration</b></h1>
     </div>
-    <Row>
-      <Col>
-        <p>Register {dataSize} entries</p>
-      </Col>
-    </Row>
-    <Form onSubmit={(e) => {
-      e.preventDefault();
-      register();
-    }}
-    >
-      {!tx && <FormGroup><Button type="submit" disabled={tx && !!tx.transactionHash}>Register</Button></FormGroup>}
-      {tx && <small className="text-success"><Tx tx={tx.transactionHash} /></small>}
-      {error && <small className="text-danger">{error.message}</small>}
-    </Form>
+    {
+      data.map((dataRow, i) => {
+        const { tx, error, registering, index } = registerResults[i];
+
+        return (
+          <Row key={index}>
+            <Col>From {dataRow.from} to {dataRow.to}</Col>
+            <Col>
+              <Form onSubmit={(e) => {
+                e.preventDefault();
+                register(dataRow.value[0], dataRow.value[1], index);
+              }}
+              >
+                {
+                  !tx &&
+                  <FormGroup>
+                    <Button type="submit" disabled={registering || (tx && !!tx.transactionHash)}>Register</Button>
+                  </FormGroup>
+                }
+                {tx && <small className="text-success"><Tx tx={tx.transactionHash} /></small>}
+                {error && <small className="text-danger">{error.message}</small>}
+              </Form>
+            </Col>
+          </Row>
+        );
+      })
+    }
   </Container>
 );
 
-const parsedDataToWeb3 = (parsedData) => {
-  const labels = []
-  const addresses = []
-
-  for (let i = 0; i < parsedData.length; i += 1) {
-    labels.push(sha3(parsedData[i][0]));
-    addresses.push(parsedData[i][1]);
-  }
-
-  return [labels,addresses];
-}
-
 const mapStateToProps = ({ app }) => ({
-  data: parsedDataToWeb3(app.parsed),
+  data: app.parsed,
   domain: app.domain,
   owner: app.owner,
-  ...app.register,
+  registerResults: app.register,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  register: (domain, labels, addresses, from) => dispatch(register(domain, labels, addresses, from)),
+  register: (domain, labels, addresses, from, index) => dispatch(register(domain, labels, addresses, from, index)),
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   ...ownProps,
-  dataSize: stateProps.data[0].length,
-  register: () => dispatchProps.register(
+  ...stateProps,
+  register: (labels, addresses, index) => dispatchProps.register(
     stateProps.domain,
-    stateProps.data[0],
-    stateProps.data[1],
-    stateProps.owner
+    labels,
+    addresses,
+    stateProps.owner,
+    index,
   ),
-  tx: stateProps.tx,
-  error: stateProps.error,
-  registering: stateProps.registering,
 });
 
 export default connect(

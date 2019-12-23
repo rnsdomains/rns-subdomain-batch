@@ -39,7 +39,7 @@ const Header = ({ authenticatedAs, showRegister, showAdmin }) => (
             <Link className="nav-link" to="/faq">FAQ</Link>
           </li>
           <li className="nav-item">
-            <Link className="btn btn btn-primary my-2 my-sm-0" to={!authenticatedAs && '/login'}>
+            <Link className="btn btn btn-primary my-2 my-sm-0" to={!authenticatedAs ? '/login' : ''}>
               {authenticatedAs || 'Login'}
             </Link>
           </li>

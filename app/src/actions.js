@@ -75,16 +75,19 @@ export const confirmParsed = (parsed) => ({
   parsed,
 });
 
-export const requestRegister = () => ({
+export const requestRegister = (index) => ({
   type: REQUEST_REGISTER,
+  index,
 });
 
-export const receiveRegister = (tx) => ({
+export const receiveRegister = (tx, index) => ({
   type: RECEIVE_REGISTER,
   tx,
+  index,
 });
 
-export const errorRegister = (error) => ({
+export const errorRegister = (error, index) => ({
   type: ERROR_REGISTER,
   error,
+  index,
 });

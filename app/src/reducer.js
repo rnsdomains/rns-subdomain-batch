@@ -34,12 +34,15 @@ const initialState = {
     error: null,
   },
   parsed: null,
-  register: {
-    tx: null,
-    error: null,
-    registering: false,
-  }
+  register: [],
 };
+
+const createRegistration = (index) => ({
+  index,
+  tx: null,
+  error: null,
+  registering: false,
+});
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -158,33 +161,43 @@ const reducer = (state = initialState, action) => {
         error: action.error,
       },
     };
-    case CONFIRM_PARSED: return {
-      ...state,
-      parsed: action.parsed,
+    case CONFIRM_PARSED: {
+      let register = [];
+      for(let i = 0; i < action.parsed.length; i += 1)
+        register.push(createRegistration(i));
+
+      return {
+        ...state,
+        parsed: action.parsed,
+        register,
+      }
     }
     case REQUEST_REGISTER: return {
       ...state,
-      register: {
+      register: state.register.map(r => r.index === action.index ? {
+        index: r.index,
         tx: null,
         error: null,
         registering: true,
-      },
+      } : r),
     };
     case RECEIVE_REGISTER: return {
       ...state,
-      register: {
+      register: state.register.map(r => r.index === action.index ? {
+        index: r.index,
         tx: action.tx,
         error: null,
         registering: false,
-      },
+      } : r),
     };
     case ERROR_REGISTER: return {
       ...state,
-      register: {
+      register: state.register.map(r => r.index === action.index ? {
+        index: r.index,
         tx: null,
         error: action.error,
         registering: false,
-      },
+      } : r ),
     };
     default: return state;
   }

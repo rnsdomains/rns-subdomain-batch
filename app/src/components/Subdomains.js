@@ -8,6 +8,9 @@ import { connect } from 'react-redux';
 import { isValidLabel } from '../lib';
 import { confirmParsed } from '../actions';
 import { push } from 'connected-react-router';
+import { sha3 } from 'web3-utils';
+
+const partSize = 25;
 
 const parseSolvedErrors = (errors) => {
   let error = [];
@@ -45,7 +48,7 @@ const parsedToCsv = (parsed) => {
   let result = '';
 
   for (let i = 0; i < parsed.length; i += 1)
-    result += `${parsed[i][0]},${parsed[i][0]}\n`;
+    result += `${parsed[i][0]},${parsed[i][1]}\n`;
 
   return result;
 }
@@ -61,6 +64,41 @@ const download = (filename, text) => {
   element.click();
 
   document.body.removeChild(element);
+}
+
+const parsedDataToParts = (parsedData) => {
+  const labels = []
+  const addresses = []
+
+  for (let i = 0; i < parsedData.length; i += 1) {
+    labels.push(sha3(parsedData[i][0]));
+    addresses.push(parsedData[i][1]);
+  }
+
+  const amountOfParts = Math.floor(labels.length / partSize);
+
+  const parts = []
+  for (let i = 0; i < amountOfParts; i += 1) {
+    parts.push({
+      from: i * partSize,
+      to: (i+1) * partSize,
+      value: [
+        labels.slice(i * partSize, (i+1) * partSize),
+        addresses.slice(i * partSize, (i+1) * partSize),
+      ],
+    });
+  }
+
+  parts.push({
+    from: amountOfParts * partSize,
+    to: labels.length,
+    value: [
+      labels.slice(amountOfParts * partSize, labels.length),
+      addresses.slice(amountOfParts * partSize, addresses.length),
+    ]
+  });
+
+  return parts;
 }
 
 class Subdomains extends Component {
@@ -169,7 +207,7 @@ class Subdomains extends Component {
     const { confirmParsed, goToRegister } = this.props;
     const { parsed } = this.state;
 
-    confirmParsed(parsed);
+    confirmParsed(parsedDataToParts(parsed));
     goToRegister();
   }
 
@@ -245,7 +283,7 @@ file must include only two columns:
                   {
                     data.map((value, index) => (
                       <tr
-                        key={value[1]}
+                        key={`${value[1]}${index}`}
                         className={
                           Object.keys(allUnsolvedConflicts[index]).length > 0 ?
                           'table-danger' :
@@ -257,9 +295,9 @@ file must include only two columns:
                         }
                       >
                         <td>{`(${value[0]}, ${value[1]})`}</td>
-                        <td ><p>{parseSolvedErrors(allSolvedConflicts[index])}</p></td>
-                        <td><p>{parseUnsolvedErrors(allUnsolvedConflicts[index])}</p></td>
-                        <td><p>{`(${parsed[index][0]}.${domain}, ${parsed[index][1]})`}</p></td>
+                        <td >{parseSolvedErrors(allSolvedConflicts[index])}</td>
+                        <td>{parseUnsolvedErrors(allUnsolvedConflicts[index])}</td>
+                        <td>{`(${parsed[index][0]}.${domain}, ${parsed[index][1]})`}</td>
                       </tr>
                     ))
                   }

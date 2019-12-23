@@ -68,7 +68,7 @@ class ValidateOwnershipComponent extends Component {
               </Form> :
               <>
                 <p>Welcome {domain}!</p>
-                <Link classNmae="btn btn-success" to="/subdomains">Register subdomains</Link>
+                <Link className="btn btn-success" to="/subdomains">Register subdomains</Link>
               </>
             }
           </Col>
