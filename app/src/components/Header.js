@@ -6,9 +6,9 @@ import { NODE_OWNER, REGISTRANT } from '../types';
 const Header = ({ authenticatedAs, showRegister, showAdmin }) => (
   <nav className="navbar navbar-expand-md navbar-light bg-light fixed-top">
     <div className="container">
-      <a className="navbar-brand" href=".">
+      <Link className="navbar-brand" to="/">
         <img src="assets/img/logo.svg" className="logo" alt="logo" />
-      </a>
+      </Link>
       <h3>
         Subdomain batch
       </h3>

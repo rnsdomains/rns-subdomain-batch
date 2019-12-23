@@ -10,7 +10,7 @@ import { confirmParsed } from '../actions';
 import { push } from 'connected-react-router';
 import { sha3 } from 'web3-utils';
 
-const partSize = 25;
+const partSize = 50;
 
 const parseSolvedErrors = (errors) => {
   let error = [];
