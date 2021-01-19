@@ -19,7 +19,7 @@
     "test": "truffle test"
   },
   "author": "rnsdomains",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/rnsdomains/rns-subdomain-batch/issues"
   },
