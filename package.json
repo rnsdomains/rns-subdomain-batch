@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/rnsdomains/rns-subdomain-batch#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^2.3.0",
+    "@openzeppelin/contracts": "^4.7.2",
     "@rsksmart/rns-registry": "^1.0.0"
   },
   "devDependencies": {
